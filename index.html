@@ -1,8 +1,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <center>
-  <img src="Slide4.png" alt="Banner" height=60 width=468>
+<div class="hero-image">
+  <div class="hero-text">
+    <h1>This's Omar Soliman</h1>
+    <p>And I'm a Data Scientist</p>
+    </div>
+</div>
+  body, html {
+    height: 100%;
+}
 
+/* The hero image */
+.hero-image {
+    /* The image used */
+    background-image: url("Slide4.png");
+
+    /* Set a specific height */
+    height: 50%;
+
+    /* Position and center the image to scale nicely on all screens */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+/* Place text in the middle of the image */
+.hero-text {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+}
+  
+  
   <h1>Welcome to my website</h1>
 
   <h2>Awesome stuff are being made by the talented developer Omar Soliman</h2>
