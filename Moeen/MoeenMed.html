@@ -4,7 +4,7 @@
     <title>Voice to Text</title>
 </head>
 <body>
-    <button id="startButton">Start Voice Input in Egyptian Arabic</button>
+    <button id="startButton">Start Voice Input</button>
     <div id="output"></div>
 
     <script>
@@ -12,7 +12,7 @@
 const outputDiv = document.getElementById('output');
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
-recognition.lang = 'ar-EG';
+recognition.lang = 'en-US';
 
 recognition.onstart = () => {
     startButton.textContent = 'Listening...';
