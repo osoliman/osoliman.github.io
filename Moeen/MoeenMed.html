@@ -12,7 +12,7 @@
 const outputDiv = document.getElementById('output');
 
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
-recognition.lang = 'en-US';
+recognition.lang = 'AR';
 
 recognition.onstart = () => {
     startButton.textContent = 'Listening...';
