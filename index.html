@@ -1,82 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Omar Soliman</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omar Soliman - Data Scientist</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .skill-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .skill-icon:nth-child(even) {
+            animation-delay: 0.5s;
+        }
+    </style>
 </head>
+<body class="bg-purple-50">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="mb-4">
+            <div class="mb-4 border-b border-purple-200">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg text-purple-600 border-purple-600" id="about-tab" data-tabs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="true">About</button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-purple-600 hover:border-purple-600" id="education-tab" data-tabs-target="#education" type="button" role="tab" aria-controls="education" aria-selected="false">Education</button>
+                    </li>
+                    <li class="mr-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-purple-600 hover:border-purple-600" id="giving-tab" data-tabs-target="#giving" type="button" role="tab" aria-controls="giving" aria-selected="false">Giving Back</button>
+                    </li>
+                </ul>
+            </div>
+            
+            <div id="tabContentExample">
+                <div class="hidden p-4 rounded-lg bg-purple-50" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    <div class="max-w-4xl mx-auto space-y-6">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-2xl font-bold text-purple-800 mb-4">About Me</h2>
+                            <p class="text-gray-700 mb-6">
+                                Hello! I'm Omar Soliman, currently serving as a Lead Data Scientist at CVS Health, a Fortune 6 company that caters to the healthcare needs of over 120 million Americans. My work revolves around leveraging analytics, including Machine Learning and Artificial Intelligence, to improve health outcomes while optimizing healthcare costs for payers.
+                            </p>
+                            
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div class="skill-icon p-4 bg-purple-100 rounded-lg text-center">
+                                    <img src="/api/placeholder/64/64" alt="SQL" class="mx-auto mb-2">
+                                    <span class="text-sm text-purple-700">SQL</span>
+                                </div>
+                                <div class="skill-icon p-4 bg-purple-100 rounded-lg text-center">
+                                    <img src="/api/placeholder/64/64" alt="Python" class="mx-auto mb-2">
+                                    <span class="text-sm text-purple-700">Python</span>
+                                </div>
+                                <div class="skill-icon p-4 bg-purple-100 rounded-lg text-center">
+                                    <img src="/api/placeholder/64/64" alt="R" class="mx-auto mb-2">
+                                    <span class="text-sm text-purple-700">R</span>
+                                </div>
+                                <div class="skill-icon p-4 bg-purple-100 rounded-lg text-center">
+                                    <img src="/api/placeholder/64/64" alt="Cloud" class="mx-auto mb-2">
+                                    <span class="text-sm text-purple-700">Cloud</span>
+                                </div>
+                            </div>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<center>
-<style>
-body, html {
-    height: 100%;
-    margin: 0;
-}
-
-.hero-image {
-  background-image: url("Banner.png");
-  height: 50%;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  position: relative;
-}
-
-.hero-text {
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: black;
-}
-</style>
-</head>
-<body>
-
-<div class="hero-image">
-  <div class="hero-text">
-    <h1 style="font-size:50px">This is Omar Soliman</h1>
-    <h2>And I'm a Data Scientist</h2>
-    <p><br></p>
-    <p><br></p>
+                            <p class="text-gray-700 mb-4">
+                                I reside in the Boston area with my wife and two children. During my leisure time, I enjoy outdoor running, swimming, cooking, spending quality time with my kids, and staying updated on the latest developments in AI.
+                            </p>
+                            
+                            <p class="text-gray-700 italic">
+                                Family and friends often describe me as flexible, easygoing, kind, patient, modest, and humble.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hidden p-4 rounded-lg bg-purple-50" id="education" role="tabpanel" aria-labelledby="education-tab">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-2xl font-bold text-purple-800 mb-4">Educational Journey</h2>
+                            <p class="text-gray-700 mb-6">
+                                I am deeply grateful to every teacher, professor, and mentor throughout my life - from pre-school and elementary school teachers in Jeddah to middle, high school, and college teachers and professors in Egypt, all the way to the faculty at Harvard Medical School campus.
+                            </p>
+                            
+                            <div class="space-y-8">
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <img src="/api/placeholder/64/64" alt="Cairo University" class="w-16 h-16 rounded-full">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-purple-700">Cairo University</h3>
+                                        <p class="text-gray-600">BVSc and MVSc</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center space-x-4">
+                                    <div class="flex-shrink-0">
+                                        <img src="/api/placeholder/64/64" alt="Harvard University" class="w-16 h-16 rounded-full">
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-purple-700">Harvard University/Harvard Medical School</h3>
+                                        <p class="text-gray-600">MMSc (Clinical Data Science)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hidden p-4 rounded-lg bg-purple-50" id="giving" role="tabpanel" aria-labelledby="giving-tab">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h2 class="text-2xl font-bold text-purple-800 mb-4">Giving Back</h2>
+                            <p class="text-gray-700 mb-6">
+                                As an immigrant, international student, and data scientist, I empathize deeply with anyone in those categories and beyond. I'm always eager to help and share my experience. I prefer meaningful conversations over text exchanges, so I'm happy to schedule a 30-minute meeting to connect.
+                            </p>
+                            
+                            <div class="text-center">
+                                <a href="https://www.linkedin.com/in/omar-soliman-15b9691b/" target="_blank" class="inline-flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    <img src="/api/placeholder/24/24" alt="LinkedIn" class="w-6 h-6">
+                                    <span>Connect on LinkedIn</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>  
-  
-<h1>
-<font color="purple">Welcome to my website!</font>
-</h1>
 
-<h2>Awesome stuff are being added</h2>
+    <script>
+        // Tab functionality
+        const tabElements = [
+            {
+                id: 'about',
+                triggerEl: document.querySelector('[data-tabs-target="#about"]'),
+                targetEl: document.querySelector('#about')
+            },
+            {
+                id: 'education',
+                triggerEl: document.querySelector('[data-tabs-target="#education"]'),
+                targetEl: document.querySelector('#education')
+            },
+            {
+                id: 'giving',
+                triggerEl: document.querySelector('[data-tabs-target="#giving"]'),
+                targetEl: document.querySelector('#giving')
+            }
+        ];
 
-<div class="w3-content w3-section" style="max-width:500px">
-  <img class="mySlides" src="Slide1.PNG" style="width:100%">
-  <img class="mySlides" src="Slide2.PNG" style="width:100%">
-  <img class="mySlides" src="Slide3.PNG" style="width:100%">
-</div>
-
-<script>
-var myIndex = 0;
-carousel();
-
-function carousel() {
-    var i;
-    var x = document.getElementsByClassName("mySlides");
-    for (i = 0; i < x.length; i++) {
-       x[i].style.display = "none";  
-    }
-    myIndex++;
-    if (myIndex > x.length) {myIndex = 1}    
-    x[myIndex-1].style.display = "block";  
-    setTimeout(carousel, 2500); // Change image every 2 seconds
-}
-</script>
-    
-<h2>Check out some of my portfolio e.g. the disease predction model below</h2>
-<p><a href="https://github.com/osoliman/Prostate_Prediction">Click here to access the Github code for this project</a></p>
-<iframe src="https://osoliman.shinyapps.io/capetown" width=80% height=100%></iframe>
-    
-<footer>
-  <p>All Rights Reserved - Omar Soliman</p>
-  <p><br></p>
-  <p><br></p>
-</footer>
-</center>
+        // Show the first tab by default
+        tabElements[0].targetEl.classList.remove('hidden');
+        
+        tabElements.forEach(tab => {
+            tab.triggerEl.addEventListener('click', () => {
+                // Hide all tabs
+                tabElements.forEach(t => {
+                    t.targetEl.classList.add('hidden');
+                    t.triggerEl.classList.remove('text-purple-600', 'border-purple-600');
+                });
+                
+                // Show the clicked tab
+                tab.targetEl.classList.remove('hidden');
+                tab.triggerEl.classList.add('text-purple-600', 'border-purple-600');
+            });
+        });
+    </script>
+</body>
+</html>
