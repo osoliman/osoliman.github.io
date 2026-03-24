@@ -17,7 +17,6 @@
     }
     svg { width: 100%; max-width: 680px; display: block; margin: 0 auto; }
 
-    /* Color variable shims for standalone use */
     :root {
       --p: #3d3d3a;
       --s: #73726c;
@@ -34,7 +33,177 @@
         --b: rgba(255,255,255,0.15);
       }
     }
+
     text { fill: var(--p); font-family: sans-serif; }
+    text.ts { font-size: 12px; fill: var(--s); }
+    text.th { font-size: 14px; font-weight: 500; fill: var(--p); }
+
+    /* Grid lines fade in */
+    .grid-line {
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    @keyframes fadeIn { to { opacity: 0.2; } }
+    @keyframes fadeInFull { to { opacity: 1; } }
+    @keyframes fadeInMid { to { opacity: 0.5; } }
+    @keyframes fadeInLabel { to { opacity: 0.6; } }
+
+    /* Axes draw in */
+    .axis {
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      animation: drawLine 0.5s ease forwards;
+    }
+    @keyframes drawLine {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Diagonal random line */
+    #random-line {
+      stroke-dasharray: 700;
+      stroke-dashoffset: 700;
+      animation: drawLine 0.6s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    /* Perfect classifier */
+    #perfect-line {
+      stroke-dasharray: 900;
+      stroke-dashoffset: 900;
+      animation: drawLine 0.5s ease forwards;
+      animation-delay: 1.0s;
+    }
+
+    /* ROC curve — main draw */
+    #roc-curve {
+      stroke-dasharray: 900;
+      stroke-dashoffset: 900;
+      animation: drawLine 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation-delay: 1.3s;
+    }
+
+    /* AUC fill fade in after curve draws */
+    #auc-fill {
+      opacity: 0;
+      animation: fadeInAUC 0.8s ease forwards;
+      animation-delay: 2.7s;
+    }
+    @keyframes fadeInAUC { to { opacity: 0.08; } }
+
+    /* Labels and annotations fade in sequentially */
+    .label-axes   { opacity: 0; animation: fadeInFull 0.5s ease forwards; }
+    .label-tick   { opacity: 0; animation: fadeInLabel 0.4s ease forwards; }
+    .label-random { opacity: 0; animation: fadeInMid  0.4s ease forwards; }
+    .annotation   { opacity: 0; animation: fadeInFull 0.5s ease forwards; }
+    .auc-label    { opacity: 0; animation: fadeInFull 0.6s ease forwards; }
+    .corner-box   { opacity: 0; animation: fadeInFull 0.5s ease forwards; }
+    .threshold-ann{ opacity: 0; animation: fadeInFull 0.5s ease forwards; }
+
+    /* Replay button */
+    #replay {
+      display: block;
+      margin: 1.2rem auto 0;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-family: sans-serif;
+      cursor: pointer;
+      background: transparent;
+      border: 0.5px solid var(--t);
+      border-radius: 8px;
+      color: var(--p);
+      opacity: 0;
+      animation: fadeInFull 0.5s ease forwards;
+      animation-delay: 3.5s;
+    }
+    #replay:hover { background: var(--bg2); }
+  </style>
+</head>
+<body>
+<svg id="chart" viewBox="0 0 680 460" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Grid lines (staggered fade in) -->
+  <line class="grid-line" x1="100" y1="60"  x2="100" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.05s"/>
+  <line class="grid-line" x1="180" y1="60"  x2="180" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.10s"/>
+  <line class="grid-line" x1="260" y1="60"  x2="260" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.15s"/>
+  <line class="grid-line" x1="340" y1="60"  x2="340" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.20s"/>
+  <line class="grid-line" x1="420" y1="60"  x2="420" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.25s"/>
+  <line class="grid-line" x1="500" y1="60"  x2="500" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.30s"/>
+  <line class="grid-line" x1="580" y1="60"  x2="580" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.35s"/>
+  <line class="grid-line" x1="100" y1="380" x2="580" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.10s"/>
+  <line class="grid-line" x1="100" y1="300" x2="580" y2="300" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.15s"/>
+  <line class="grid-line" x1="100" y1="220" x2="580" y2="220" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.20s"/>
+  <line class="grid-line" x1="100" y1="140" x2="580" y2="140" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.25s"/>
+  <line class="grid-line" x1="100" y1="60"  x2="580" y2="60"  stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.30s"/>
+
+  <!-- Axes -->
+  <line class="axis" x1="100" y1="390" x2="590" y2="390" stroke="var(--p)" stroke-width="1.5" marker-end="url(#arrow)" style="animation-delay:0.3s"/>
+  <line class="axis" x1="90"  y1="380" x2="90"  y2="48"  stroke="var(--p)" stroke-width="1.5" marker-end="url(#arrow)" style="animation-delay:0.3s"/>
+
+  <!-- Tick labels -->
+  <text class="label-tick ts" x="100" y="400" text-anchor="middle" style="animation-delay:0.55s">0</text>
+  <text class="label-tick ts" x="340" y="400" text-anchor="middle" style="animation-delay:0.60s">0.5</text>
+  <text class="label-tick ts" x="580" y="400" text-anchor="middle" style="animation-delay:0.65s">1</text>
+  <text class="label-tick ts" x="84" y="383" text-anchor="end" style="animation-delay:0.55s">0</text>
+  <text class="label-tick ts" x="84" y="223" text-anchor="end" style="animation-delay:0.60s">0.5</text>
+  <text class="label-tick ts" x="84" y="63"  text-anchor="end" style="animation-delay:0.65s">1</text>
+
+  <!-- Axis labels -->
+  <text class="label-axes th" x="340" y="430" text-anchor="middle" style="animation-delay:0.5s">False Positive Rate (FPR)</text>
+  <text class="label-axes ts" x="340" y="446" text-anchor="middle" style="animation-delay:0.55s">= FP / (FP + TN)   |   1 − Specificity</text>
+  <text class="label-axes th" x="28" y="220" text-anchor="middle" transform="rotate(-90,28,220)" style="animation-delay:0.5s">True Positive Rate (TPR)</text>
+  <text class="label-axes ts" x="55" y="245" text-anchor="middle" transform="rotate(-90,55,245)" style="animation-delay:0.55s">= TP / (TP + FN)   |   Recall</text>
+
+  <!-- Random classifier diagonal -->
+  <line id="random-line" x1="100" y1="380" x2="580" y2="60" stroke="var(--t)" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
+  <text class="label-random ts" x="560" y="85" text-anchor="middle" style="animation-delay:1.5s">Random</text>
+
+  <!-- Perfect classifier -->
+  <path id="perfect-line" d="M100,380 L100,60 L580,60" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+  <text class="annotation ts" x="130" y="50" fill="#0F6E56" style="animation-delay:1.6s">Perfect classifier</text>
+
+  <!-- AUC shaded fill (appears after curve) -->
+  <path id="auc-fill" d="M100,380 C120,200 160,80 200,68 C280,55 400,58 580,60 L580,380 Z" fill="#3B8BD4"/>
+
+  <!-- ROC curve -->
+  <path id="roc-curve" d="M100,380 C120,200 160,80 200,68 C280,55 400,58 580,60"
+        fill="none" stroke="#3B8BD4" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- AUC label -->
+  <text class="auc-label th" x="400" y="250" text-anchor="middle" fill="#185FA5" style="animation-delay:2.8s">AUC ≈ 0.92</text>
+
+  <!-- Threshold annotation -->
+  <path class="threshold-ann" d="M210,160 L270,200" stroke="#D85A30" stroke-width="1" stroke-dasharray="3 2" fill="none" marker-end="url(#arrow)" style="animation-delay:3.0s"/>
+  <text class="threshold-ann ts" x="200" y="155" text-anchor="middle" fill="#993C1D" style="animation-delay:3.0s">Lower threshold →</text>
+  <text class="threshold-ann ts" x="200" y="168" text-anchor="middle" fill="#993C1D" style="animation-delay:3.0s">TPR↑, FPR↑</text>
+
+  <!-- Corner annotation -->
+  <rect class="corner-box" x="102" y="64" width="130" height="36" rx="6" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" style="animation-delay:3.1s"/>
+  <text class="corner-box ts" x="167" y="79"  text-anchor="middle" style="animation-delay:3.1s">Top-left = ideal</text>
+  <text class="corner-box ts" x="167" y="93"  text-anchor="middle" style="animation-delay:3.1s">TPR=1, FPR=0</text>
+</svg>
+
+<button id="replay" onclick="replayAnimation()">Replay animation</button>
+
+<script>
+function replayAnimation() {
+  const svg = document.getElementById('chart');
+  svg.style.display = 'none';
+  void svg.offsetHeight;
+  svg.style.display = '';
+
+  // Re-trigger all animations by cloning and replacing
+  const clone = svg.cloneNode(true);
+  svg.parentNode.replaceChild(clone, svg);
+  clone.querySelector('#replay').onclick = replayAnimation;
+}
+</script>
+</body>
+</html>    text { fill: var(--p); font-family: sans-serif; }
     text.ts { font-size: 12px; fill: var(--s); }
     text.th { font-size: 14px; font-weight: 500; fill: var(--p); }
   </style>
