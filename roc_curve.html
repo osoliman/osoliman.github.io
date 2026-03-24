@@ -3,204 +3,456 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ROC Curve Diagram</title>
+  <title>ROC Curve — Threshold Explorer</title>
   <style>
-    body {
-      margin: 0;
-      padding: 2rem;
-      background: #ffffff;
-      font-family: sans-serif;
-      box-sizing: border-box;
-    }
-    @media (prefers-color-scheme: dark) {
-      body { background: #1a1a18; }
-    }
-    svg { width: 100%; max-width: 680px; display: block; margin: 0 auto; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --p: #3d3d3a;
-      --s: #73726c;
-      --t: #73726c;
-      --bg2: #f1efe8;
-      --b: rgba(0,0,0,0.15);
+      --bg:        #ffffff;
+      --bg2:       #f5f4f0;
+      --bg-info:   #e6f1fb;
+      --txt:       #3d3d3a;
+      --txt2:      #73726c;
+      --txt-info:  #0c447c;
+      --border:    rgba(0,0,0,0.12);
+      --border2:   rgba(0,0,0,0.22);
+      --btn-hover: #f1efe8;
+      --clr-grid:  rgba(0,0,0,0.10);
+      --clr-rand:  rgba(0,0,0,0.20);
+      --clr-curve: #3B8BD4;
+      --clr-dot-active: #D85A30;
+      --clr-auc:   rgba(59,139,212,0.09);
+      --clr-axis:  #3d3d3a;
+      --clr-sub:   #73726c;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --p: #c2c0b6;
-        --s: #9c9a92;
-        --t: #9c9a92;
-        --bg2: #2c2c2a;
-        --b: rgba(255,255,255,0.15);
+        --bg:        #1a1a18;
+        --bg2:       #242422;
+        --bg-info:   #0c2d4a;
+        --txt:       #c2c0b6;
+        --txt2:      #9c9a92;
+        --txt-info:  #85b7eb;
+        --border:    rgba(255,255,255,0.12);
+        --border2:   rgba(255,255,255,0.22);
+        --btn-hover: #2c2c2a;
+        --clr-grid:  rgba(255,255,255,0.11);
+        --clr-rand:  rgba(255,255,255,0.22);
+        --clr-curve: #3B8BD4;
+        --clr-dot-active: #D85A30;
+        --clr-auc:   rgba(59,139,212,0.12);
+        --clr-axis:  #c2c0b6;
+        --clr-sub:   #9c9a92;
       }
     }
 
-    text { fill: var(--p); font-family: sans-serif; }
-    text.ts { font-size: 12px; fill: var(--s); }
-    text.th { font-size: 14px; font-weight: 500; fill: var(--p); }
-
-    /* Grid lines fade in */
-    .grid-line {
-      opacity: 0;
-      animation: fadeIn 0.4s ease forwards;
-    }
-    @keyframes fadeIn { to { opacity: 0.2; } }
-    @keyframes fadeInFull { to { opacity: 1; } }
-    @keyframes fadeInMid { to { opacity: 0.5; } }
-    @keyframes fadeInLabel { to { opacity: 0.6; } }
-
-    /* Axes draw in */
-    .axis {
-      stroke-dasharray: 600;
-      stroke-dashoffset: 600;
-      animation: drawLine 0.5s ease forwards;
-    }
-    @keyframes drawLine {
-      to { stroke-dashoffset: 0; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 2rem 1.5rem 2.5rem;
+      min-height: 100vh;
     }
 
-    /* Diagonal random line */
-    #random-line {
-      stroke-dasharray: 700;
-      stroke-dashoffset: 700;
-      animation: drawLine 0.6s ease forwards;
-      animation-delay: 0.8s;
+    h1 {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--txt);
+      margin-bottom: 6px;
     }
-
-    /* Perfect classifier */
-    #perfect-line {
-      stroke-dasharray: 900;
-      stroke-dashoffset: 900;
-      animation: drawLine 0.5s ease forwards;
-      animation-delay: 1.0s;
-    }
-
-    /* ROC curve — main draw */
-    #roc-curve {
-      stroke-dasharray: 900;
-      stroke-dashoffset: 900;
-      animation: drawLine 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-      animation-delay: 1.3s;
-    }
-
-    /* AUC fill fade in after curve draws */
-    #auc-fill {
-      opacity: 0;
-      animation: fadeInAUC 0.8s ease forwards;
-      animation-delay: 2.7s;
-    }
-    @keyframes fadeInAUC { to { opacity: 0.08; } }
-
-    /* Labels and annotations fade in sequentially */
-    .label-axes   { opacity: 0; animation: fadeInFull 0.5s ease forwards; }
-    .label-tick   { opacity: 0; animation: fadeInLabel 0.4s ease forwards; }
-    .label-random { opacity: 0; animation: fadeInMid  0.4s ease forwards; }
-    .annotation   { opacity: 0; animation: fadeInFull 0.5s ease forwards; }
-    .auc-label    { opacity: 0; animation: fadeInFull 0.6s ease forwards; }
-    .corner-box   { opacity: 0; animation: fadeInFull 0.5s ease forwards; }
-    .threshold-ann{ opacity: 0; animation: fadeInFull 0.5s ease forwards; }
-
-    /* Replay button */
-    #replay {
-      display: block;
-      margin: 1.2rem auto 0;
-      padding: 8px 20px;
+    .subtitle {
       font-size: 13px;
-      font-family: sans-serif;
-      cursor: pointer;
-      background: transparent;
-      border: 0.5px solid var(--t);
-      border-radius: 8px;
-      color: var(--p);
-      opacity: 0;
-      animation: fadeInFull 0.5s ease forwards;
-      animation-delay: 3.5s;
+      color: var(--txt2);
+      margin-bottom: 1.6rem;
     }
-    #replay:hover { background: var(--bg2); }
+
+    #roc-wrap {
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    #tbl-side {
+      flex: 0 0 280px;
+    }
+
+    #chart-side {
+      flex: 1;
+      min-width: 260px;
+      max-width: 420px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead tr {
+      border-bottom: 0.5px solid var(--border2);
+    }
+    th {
+      padding: 6px 8px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--txt2);
+      line-height: 1.4;
+    }
+    th.left { text-align: left; }
+    .col-sub {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--txt2);
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+    td {
+      padding: 8px 8px;
+      text-align: center;
+      color: var(--txt);
+      border-bottom: 0.5px solid var(--border);
+      transition: background 0.3s, color 0.3s;
+      font-size: 13px;
+    }
+    td.left { text-align: left; font-size: 12px; color: var(--txt2); }
+    tr.active td {
+      background: var(--bg-info);
+      color: var(--txt-info);
+      font-weight: 500;
+    }
+    tr.active td.left { color: var(--txt-info); }
+    tr.done td { background: var(--bg2); }
+
+    #ctrl {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      font-size: 12px;
+      padding: 6px 13px;
+      border-radius: 8px;
+      border: 0.5px solid var(--border2);
+      background: transparent;
+      color: var(--txt);
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    button:hover:not(:disabled) { background: var(--btn-hover); }
+    button:active:not(:disabled) { transform: scale(0.97); }
+    button:disabled { opacity: 0.3; cursor: default; }
+
+    #btn-pause {
+      min-width: 62px;
+    }
+
+    #step-label {
+      font-size: 12px;
+      color: var(--txt2);
+      margin-left: 4px;
+    }
+
+    #status-bar {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--txt2);
+      min-height: 18px;
+      transition: opacity 0.3s;
+    }
+
+    svg { display: block; width: 100%; }
   </style>
 </head>
 <body>
-<svg id="chart" viewBox="0 0 680 460" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </marker>
-  </defs>
 
-  <!-- Grid lines (staggered fade in) -->
-  <line class="grid-line" x1="100" y1="60"  x2="100" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.05s"/>
-  <line class="grid-line" x1="180" y1="60"  x2="180" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.10s"/>
-  <line class="grid-line" x1="260" y1="60"  x2="260" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.15s"/>
-  <line class="grid-line" x1="340" y1="60"  x2="340" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.20s"/>
-  <line class="grid-line" x1="420" y1="60"  x2="420" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.25s"/>
-  <line class="grid-line" x1="500" y1="60"  x2="500" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.30s"/>
-  <line class="grid-line" x1="580" y1="60"  x2="580" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.35s"/>
-  <line class="grid-line" x1="100" y1="380" x2="580" y2="380" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.10s"/>
-  <line class="grid-line" x1="100" y1="300" x2="580" y2="300" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.15s"/>
-  <line class="grid-line" x1="100" y1="220" x2="580" y2="220" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.20s"/>
-  <line class="grid-line" x1="100" y1="140" x2="580" y2="140" stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.25s"/>
-  <line class="grid-line" x1="100" y1="60"  x2="580" y2="60"  stroke="var(--t)" stroke-width="0.5" style="animation-delay:0.30s"/>
+<h1>ROC curve — threshold explorer</h1>
+<p class="subtitle">Each point corresponds to a classification threshold. Watch how TPR and FPR trade off as the threshold lowers.</p>
 
-  <!-- Axes -->
-  <line class="axis" x1="100" y1="390" x2="590" y2="390" stroke="var(--p)" stroke-width="1.5" marker-end="url(#arrow)" style="animation-delay:0.3s"/>
-  <line class="axis" x1="90"  y1="380" x2="90"  y2="48"  stroke="var(--p)" stroke-width="1.5" marker-end="url(#arrow)" style="animation-delay:0.3s"/>
+<div id="roc-wrap">
+  <div id="tbl-side">
+    <table>
+      <thead>
+        <tr>
+          <th class="left">Threshold</th>
+          <th>TPR <span class="col-sub">Sensitivity / Recall</span></th>
+          <th>FPR <span class="col-sub">1 − Specificity</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
 
-  <!-- Tick labels -->
-  <text class="label-tick ts" x="100" y="400" text-anchor="middle" style="animation-delay:0.55s">0</text>
-  <text class="label-tick ts" x="340" y="400" text-anchor="middle" style="animation-delay:0.60s">0.5</text>
-  <text class="label-tick ts" x="580" y="400" text-anchor="middle" style="animation-delay:0.65s">1</text>
-  <text class="label-tick ts" x="84" y="383" text-anchor="end" style="animation-delay:0.55s">0</text>
-  <text class="label-tick ts" x="84" y="223" text-anchor="end" style="animation-delay:0.60s">0.5</text>
-  <text class="label-tick ts" x="84" y="63"  text-anchor="end" style="animation-delay:0.65s">1</text>
+    <div id="ctrl">
+      <button id="btn-prev" disabled>← Prev</button>
+      <button id="btn-pause">Pause</button>
+      <button id="btn-next">Next →</button>
+      <button id="btn-replay">Replay</button>
+      <span id="step-label">0 / 5</span>
+    </div>
 
-  <!-- Axis labels -->
-  <text class="label-axes th" x="340" y="430" text-anchor="middle" style="animation-delay:0.5s">False Positive Rate (FPR)</text>
-  <text class="label-axes ts" x="340" y="446" text-anchor="middle" style="animation-delay:0.55s">= FP / (FP + TN)   |   1 − Specificity</text>
-  <text class="label-axes th" x="28" y="220" text-anchor="middle" transform="rotate(-90,28,220)" style="animation-delay:0.5s">True Positive Rate (TPR)</text>
-  <text class="label-axes ts" x="55" y="245" text-anchor="middle" transform="rotate(-90,55,245)" style="animation-delay:0.55s">= TP / (TP + FN)   |   Recall</text>
+    <div id="status-bar"></div>
+  </div>
 
-  <!-- Random classifier diagonal -->
-  <line id="random-line" x1="100" y1="380" x2="580" y2="60" stroke="var(--t)" stroke-width="1" stroke-dasharray="6 4" opacity="0.4"/>
-  <text class="label-random ts" x="560" y="85" text-anchor="middle" style="animation-delay:1.5s">Random</text>
-
-  <!-- Perfect classifier -->
-  <path id="perfect-line" d="M100,380 L100,60 L580,60" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
-  <text class="annotation ts" x="130" y="50" fill="#0F6E56" style="animation-delay:1.6s">Perfect classifier</text>
-
-  <!-- AUC shaded fill (appears after curve) -->
-  <path id="auc-fill" d="M100,380 C120,200 160,80 200,68 C280,55 400,58 580,60 L580,380 Z" fill="#3B8BD4"/>
-
-  <!-- ROC curve -->
-  <path id="roc-curve" d="M100,380 C120,200 160,80 200,68 C280,55 400,58 580,60"
-        fill="none" stroke="#3B8BD4" stroke-width="2.5" stroke-linejoin="round"/>
-
-  <!-- AUC label -->
-  <text class="auc-label th" x="400" y="250" text-anchor="middle" fill="#185FA5" style="animation-delay:2.8s">AUC ≈ 0.92</text>
-
-  <!-- Threshold annotation -->
-  <path class="threshold-ann" d="M210,160 L270,200" stroke="#D85A30" stroke-width="1" stroke-dasharray="3 2" fill="none" marker-end="url(#arrow)" style="animation-delay:3.0s"/>
-  <text class="threshold-ann ts" x="200" y="155" text-anchor="middle" fill="#993C1D" style="animation-delay:3.0s">Lower threshold →</text>
-  <text class="threshold-ann ts" x="200" y="168" text-anchor="middle" fill="#993C1D" style="animation-delay:3.0s">TPR↑, FPR↑</text>
-
-  <!-- Corner annotation -->
-  <rect class="corner-box" x="102" y="64" width="130" height="36" rx="6" fill="var(--bg2)" stroke="var(--b)" stroke-width="0.5" style="animation-delay:3.1s"/>
-  <text class="corner-box ts" x="167" y="79"  text-anchor="middle" style="animation-delay:3.1s">Top-left = ideal</text>
-  <text class="corner-box ts" x="167" y="93"  text-anchor="middle" style="animation-delay:3.1s">TPR=1, FPR=0</text>
-</svg>
-
-<button id="replay" onclick="replayAnimation()">Replay animation</button>
+  <div id="chart-side">
+    <svg id="svg-roc" viewBox="0 0 360 320"></svg>
+  </div>
+</div>
 
 <script>
-function replayAnimation() {
-  const svg = document.getElementById('chart');
-  svg.style.display = 'none';
-  void svg.offsetHeight;
-  svg.style.display = '';
+(function () {
+  const pts = [
+    { thr: '1.0  (all negative)', tpr: 0.00, fpr: 0.00 },
+    { thr: '0.7',                  tpr: 0.40, fpr: 0.08 },
+    { thr: '0.5',                  tpr: 0.72, fpr: 0.20 },
+    { thr: '0.3',                  tpr: 0.90, fpr: 0.45 },
+    { thr: '0.0  (all positive)',  tpr: 1.00, fpr: 1.00 },
+  ];
 
-  // Re-trigger all animations by cloning and replacing
-  const clone = svg.cloneNode(true);
-  svg.parentNode.replaceChild(clone, svg);
-  clone.querySelector('#replay').onclick = replayAnimation;
-}
+  const PAD = { l: 68, r: 20, t: 20, b: 46 };
+  const W = 360, H = 320;
+  const cw = W - PAD.l - PAD.r;
+  const ch = H - PAD.t - PAD.b;
+
+  function cx(fpr) { return PAD.l + fpr * cw; }
+  function cy(tpr) { return PAD.t + (1 - tpr) * ch; }
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svgEl = document.getElementById('svg-roc');
+
+  const css = getComputedStyle(document.documentElement);
+  const get = v => css.getPropertyValue(v).trim();
+
+  const clrGrid   = get('--clr-grid')        || 'rgba(0,0,0,0.1)';
+  const clrAxis   = get('--clr-axis')        || '#3d3d3a';
+  const clrSub    = get('--clr-sub')         || '#73726c';
+  const clrRandom = get('--clr-rand')        || 'rgba(0,0,0,0.2)';
+  const clrCurve  = '#3B8BD4';
+  const clrDotActive = '#D85A30';
+  const clrAUC    = get('--clr-auc')         || 'rgba(59,139,212,0.09)';
+
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(svgNS, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(content, attrs, parent) {
+    const e = el('text', attrs, parent);
+    e.textContent = content;
+    return e;
+  }
+
+  function buildBase() {
+    const defs = el('defs', {}, svgEl);
+    const mk = el('marker', { id: 'arr', viewBox: '0 0 10 10', refX: '8', refY: '5', markerWidth: '5', markerHeight: '5', orient: 'auto-start-reverse' }, defs);
+    el('path', { d: 'M2 1L8 5L2 9', fill: 'none', stroke: clrAxis, 'stroke-width': '1.5', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, mk);
+
+    for (let i = 0; i <= 4; i++) {
+      const x = cx(i / 4), y = cy(i / 4);
+      el('line', { x1: x, y1: PAD.t, x2: x, y2: PAD.t + ch, stroke: clrGrid, 'stroke-width': '0.5' }, svgEl);
+      el('line', { x1: PAD.l, y1: y, x2: PAD.l + cw, y2: y, stroke: clrGrid, 'stroke-width': '0.5' }, svgEl);
+      const label = (i / 4).toFixed(2);
+      if (i > 0 && i < 4) {
+        txt(label, { x: x, y: PAD.t + ch + 14, 'text-anchor': 'middle', 'font-size': '10', fill: clrSub }, svgEl);
+        txt(label, { x: PAD.l - 6, y: y + 4, 'text-anchor': 'end', 'font-size': '10', fill: clrSub }, svgEl);
+      }
+    }
+    txt('0', { x: PAD.l, y: PAD.t + ch + 14, 'text-anchor': 'middle', 'font-size': '10', fill: clrSub }, svgEl);
+    txt('0', { x: PAD.l - 6, y: PAD.t + ch + 4, 'text-anchor': 'end', 'font-size': '10', fill: clrSub }, svgEl);
+    txt('1', { x: PAD.l + cw, y: PAD.t + ch + 14, 'text-anchor': 'middle', 'font-size': '10', fill: clrSub }, svgEl);
+    txt('1', { x: PAD.l - 6, y: PAD.t + 4, 'text-anchor': 'end', 'font-size': '10', fill: clrSub }, svgEl);
+
+    el('line', { x1: PAD.l, y1: PAD.t + ch + 2, x2: PAD.l + cw + 8, y2: PAD.t + ch + 2, stroke: clrAxis, 'stroke-width': '1.2', 'marker-end': 'url(#arr)' }, svgEl);
+    el('line', { x1: PAD.l - 2, y1: PAD.t + ch, x2: PAD.l - 2, y2: PAD.t - 8, stroke: clrAxis, 'stroke-width': '1.2', 'marker-end': 'url(#arr)' }, svgEl);
+
+    txt('FPR (1 − Specificity)', { x: PAD.l + cw / 2, y: H - 16, 'text-anchor': 'middle', 'font-size': '11', fill: clrAxis, 'font-weight': '500' }, svgEl);
+    txt('= FP / (FP + TN)', { x: PAD.l + cw / 2, y: H - 4, 'text-anchor': 'middle', 'font-size': '9', fill: clrSub }, svgEl);
+
+    const yMid = PAD.t + ch / 2;
+    const yLbl = el('text', { transform: `rotate(-90,22,${yMid})`, 'text-anchor': 'middle', 'font-size': '11', fill: clrAxis, 'font-weight': '500' }, svgEl);
+    yLbl.textContent = 'TPR (Sensitivity / Recall)';
+    const yLbl2 = el('text', { transform: `rotate(-90,36,${yMid})`, 'text-anchor': 'middle', 'font-size': '9', fill: clrSub }, svgEl);
+    yLbl2.textContent = '= TP / (TP + FN)';
+
+    el('line', { x1: cx(0), y1: cy(0), x2: cx(1), y2: cy(1), stroke: clrRandom, 'stroke-width': '1', 'stroke-dasharray': '4 3' }, svgEl);
+    txt('random', { x: cx(0.82), y: cy(0.72) - 6, 'text-anchor': 'middle', 'font-size': '9', fill: clrSub }, svgEl);
+  }
+
+  const lineGroup = el('g', {}, svgEl);
+  const dotGroup  = el('g', {}, svgEl);
+  const aucPoly   = el('polygon', { points: '', fill: clrAUC, stroke: 'none' }, lineGroup);
+  const aucLabel  = el('text', { x: PAD.l + cw * 0.62, y: PAD.t + ch * 0.55, 'text-anchor': 'middle', 'font-size': '12', 'font-weight': '500', fill: '#185FA5', opacity: '0', style: 'transition: opacity 0.8s ease' }, svgEl);
+  aucLabel.textContent = 'AUC ≈ 0.81';
+
+  const rows = [];
+  (function buildTable() {
+    const tbody = document.getElementById('tbody');
+    pts.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="left">${p.thr}</td><td>${p.tpr.toFixed(2)}</td><td>${p.fpr.toFixed(2)}</td>`;
+      tbody.appendChild(tr);
+      rows.push(tr);
+    });
+  })();
+
+  function animateDot(dotEl, toR, duration) {
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min((now - start) / duration, 1);
+      dotEl.setAttribute('r', (toR * t).toFixed(2));
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function animateLine(pathEl, totalLen, duration, onDone) {
+    pathEl.setAttribute('stroke-dasharray', totalLen);
+    pathEl.setAttribute('stroke-dashoffset', totalLen);
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      pathEl.setAttribute('stroke-dashoffset', (totalLen * (1 - ease)).toFixed(2));
+      if (t < 1) requestAnimationFrame(frame);
+      else if (onDone) onDone();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  let step = 0;
+  let autoTimer = null;
+  let isPaused = false;
+
+  const btnPrev   = document.getElementById('btn-prev');
+  const btnPause  = document.getElementById('btn-pause');
+  const btnNext   = document.getElementById('btn-next');
+  const btnReplay = document.getElementById('btn-replay');
+  const stepLabel = document.getElementById('step-label');
+  const statusBar = document.getElementById('status-bar');
+
+  const descriptions = [
+    '',
+    'Threshold 1.0 — predict everything negative. TPR = 0, FPR = 0. Starting point.',
+    'Threshold 0.7 — a few positives called. TPR rises to 0.40, FPR stays low at 0.08.',
+    'Threshold 0.5 — balanced cut-off. TPR = 0.72, FPR = 0.20. Good trade-off zone.',
+    'Threshold 0.3 — catching more positives but also more false alarms. TPR = 0.90, FPR = 0.45.',
+    'Threshold 0.0 — predict everything positive. TPR = 1.0, FPR = 1.0. Top-right corner.',
+  ];
+
+  function updateUI() {
+    stepLabel.textContent = `${step} / ${pts.length}`;
+    statusBar.textContent = descriptions[step] || '';
+    btnPrev.disabled  = step <= 0;
+    btnNext.disabled  = step >= pts.length;
+    btnPause.textContent = isPaused ? 'Resume' : 'Pause';
+    btnPause.disabled = (step >= pts.length && !isPaused);
+  }
+
+  function renderStep(s, animate) {
+    rows.forEach((r, i) => {
+      r.className = i === s - 1 ? 'active' : i < s - 1 ? 'done' : '';
+    });
+
+    while (dotGroup.firstChild) dotGroup.removeChild(dotGroup.firstChild);
+    while (lineGroup.firstChild && lineGroup.firstChild !== aucPoly)
+      lineGroup.removeChild(lineGroup.firstChild);
+
+    const visible = pts.slice(0, s);
+
+    if (visible.length >= 2) {
+      let d = `M ${cx(visible[0].fpr)} ${cy(visible[0].tpr)}`;
+      let len = 0;
+      for (let i = 1; i < visible.length; i++) {
+        d += ` L ${cx(visible[i].fpr)} ${cy(visible[i].tpr)}`;
+        const dx = cx(visible[i].fpr) - cx(visible[i - 1].fpr);
+        const dy = cy(visible[i].tpr) - cy(visible[i - 1].tpr);
+        len += Math.sqrt(dx * dx + dy * dy);
+      }
+      const pathEl = el('path', { d, fill: 'none', stroke: clrCurve, 'stroke-width': '2', 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, lineGroup);
+      if (animate) animateLine(pathEl, len, 480);
+
+      let ap = visible.map(p => `${cx(p.fpr)},${cy(p.tpr)}`).join(' ');
+      ap += ` ${cx(visible[visible.length - 1].fpr)},${cy(0)} ${cx(visible[0].fpr)},${cy(0)}`;
+      aucPoly.setAttribute('points', ap);
+    } else {
+      aucPoly.setAttribute('points', '');
+    }
+
+    visible.forEach((p, i) => {
+      const isNew = animate && i === visible.length - 1;
+      const dot = el('circle', {
+        cx: cx(p.fpr), cy: cy(p.tpr),
+        r: isNew ? 0 : 5,
+        fill: i === visible.length - 1 ? clrDotActive : clrCurve,
+        stroke: 'white', 'stroke-width': '1.5'
+      }, dotGroup);
+      if (isNew) animateDot(dot, 6, 340);
+    });
+
+    aucLabel.setAttribute('opacity', s >= pts.length ? '1' : '0');
+
+    updateUI();
+  }
+
+  function clearAuto() {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  }
+
+  function scheduleNext(delay) {
+    clearAuto();
+    if (!isPaused && step < pts.length) {
+      autoTimer = setTimeout(() => {
+        step++;
+        renderStep(step, true);
+        if (step < pts.length) scheduleNext(900);
+      }, delay);
+    }
+  }
+
+  function autoPlay() {
+    clearAuto();
+    isPaused = false;
+    step = 0;
+    renderStep(0, false);
+    scheduleNext(500);
+  }
+
+  btnPrev.onclick = () => {
+    clearAuto();
+    isPaused = true;
+    if (step > 0) { step--; renderStep(step, false); }
+    updateUI();
+  };
+
+  btnNext.onclick = () => {
+    clearAuto();
+    isPaused = true;
+    if (step < pts.length) { step++; renderStep(step, true); }
+    updateUI();
+  };
+
+  btnPause.onclick = () => {
+    if (step >= pts.length) return;
+    isPaused = !isPaused;
+    if (!isPaused) {
+      scheduleNext(600);
+    } else {
+      clearAuto();
+    }
+    updateUI();
+  };
+
+  btnReplay.onclick = autoPlay;
+
+  buildBase();
+  renderStep(0, false);
+  autoPlay();
+})();
 </script>
 </body>
 </html>
