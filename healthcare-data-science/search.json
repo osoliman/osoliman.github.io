@@ -1,0 +1,92 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Healthcare Data Science",
+    "section": "",
+    "text": "Welcome\nThis is a work-in-progress draft. Chapters, structure, and content are still evolving — feedback is welcome, but please don’t cite or redistribute this version.\n\n\n\n\n\n\nNote\n\n\n\nStatus: Early draft, actively being written.",
+    "crumbs": [
+      "Welcome"
+    ]
+  },
+  {
+    "objectID": "intro.html",
+    "href": "intro.html",
+    "title": "Preface",
+    "section": "",
+    "text": "About the Author\nOmar Soliman is a Lead Data Scientist at a Fortune 5 healthcare company, where he has worked for over 8 years. He is also an adjunct faculty member in Data Science at Massachusetts College of Pharmacy and Health Sciences (MCPHS),1 where he teaches MBA students how to use data science for healthcare decision-making and helps medical directors and executives make data-driven decisions that improve patient outcomes. Omar earned his Master of Medical Sciences in Clinical Investigation (Clinical Data Science track) from Harvard Medical School in 2018, completing his thesis at the Dana-Farber Cancer Institute. He is passionate about simplifying complex data science concepts and teaching aspiring data scientists how to apply their skills in real-world healthcare scenarios. In his free time, Omar enjoys walking and running outdoors, watching documentaries, spending time with his two kids, traveling, and learning about the latest advances in AI in healthcare.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html#motivation-for-the-book",
+    "href": "intro.html#motivation-for-the-book",
+    "title": "Preface",
+    "section": "Motivation for the Book",
+    "text": "Motivation for the Book\nWhile preparing for his courses at MCPHS, Omar realized there was a lack of comprehensive, up-to-date resources focused on the practical application of data science in healthcare. Existing resources were often too theoretical, too general (not healthcare-specific), or outdated, leaving students and professionals without a clear path to apply their knowledge effectively. This book was born out of a desire to fill that gap, providing practical, case-based examples that help readers learn how to apply data science in healthcare settings.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html#this-book-is-for",
+    "href": "intro.html#this-book-is-for",
+    "title": "Preface",
+    "section": "This Book Is For",
+    "text": "This Book Is For\n\nNew, aspiring, and junior data scientists who want an organized and practical way to learn healthcare data science.\nMBA students, project managers, and healthcare professionals who want to understand how data science can be applied to improve healthcare decision-making.\nExperienced data scientists from other fields who want to transition into healthcare and need a practical guide to get started.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html#how-this-book-is-organized",
+    "href": "intro.html#how-this-book-is-organized",
+    "title": "Preface",
+    "section": "How this book is organized",
+    "text": "How this book is organized\nThis book is structured around the three main tasks of data science, a framework I learned from my mentor Miguel Hernán, Professor of Epidemiology and Biostatistics at Harvard: description, prediction, and causal inference. Each task gets its own section, with practical examples and case studies showing how to apply these techniques in healthcare settings. Earlier chapters ground you in the lifecycle of healthcare data — where it comes from and where it lives — before we get to the analysis.\nAlong the way, you’ll be introduced to three programming languages — SQL, Python, and R — and to visualization tools like Tableau. One of my main goals is to take the anxiety out of learning to program. To that end, we lean on browser-based environments like Google Colab and Posit Cloud (formerly RStudio Cloud), so you can start writing and running code immediately, with no complex installation. We’ll also show you how to use AI to assist your coding.\nAll the code in this book is available on GitHub, and I encourage you to explore it, run it, and adapt it to your own needs. Now — relax, and enjoy learning healthcare data science at your own pace.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "intro.html#footnotes",
+    "href": "intro.html#footnotes",
+    "title": "Preface",
+    "section": "",
+    "text": "I had to autocomplete “Massachusetts” despite living here for over 10 years. :)↩︎",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "chapter1.html",
+    "href": "chapter1.html",
+    "title": "1  Healthcare Data",
+    "section": "",
+    "text": "1.1 Insurance claims\nIn this chapter, we’ll explore the most common sources of healthcare data. Most of these are universal — they’ll look familiar wherever in the world you practice. The exception is insurance claims data, which is heavily shaped by the US system. If you’re reading from outside the US and that section feels unintuitive, that’s expected: it’s a quirk of how American healthcare is financed, not a gap in your understanding.\nThe sources we’ll cover:\nBefore diving into claims data, let’s take a few minutes on health insurance in the US — a refresher for some, a first pass for others.\nAt some point, having health insurance in the US was effectively mandatory: you could face a penalty for going without it. As of 2026, whether that’s still true depends on which state you live in.1 And because care is so expensive here, paying out of pocket isn’t realistic for most people — which is exactly why claims data exists in the volume and shape that it does.\nSo what actually happens? When you see a provider — a doctor, dentist, nurse, and so on — they diagnose you, perform procedures, and/or prescribe medication. To get paid, they submit a record of all of this to the insurer. That record is the claim: they’re claiming payment for the service.\nBut there are a ton of diseases, procedures, and drugs out there. Do providers just submit free text? Good question — no. They submit codes: diagnosis codes, procedure codes, and drug codes. Let’s take each in turn: what it covers, who maintains it, and why it matters for your analysis.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Healthcare Data</span>"
+    ]
+  },
+  {
+    "objectID": "chapter1.html#sec-claims",
+    "href": "chapter1.html#sec-claims",
+    "title": "1  Healthcare Data",
+    "section": "",
+    "text": "Note\n\n\n\nWhen we say insurance in this book, we mean health insurance — not auto, home, or any other kind.\n\n\n\n\n\n\n1.1.1 Diagnosis codes",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Healthcare Data</span>"
+    ]
+  },
+  {
+    "objectID": "chapter1.html#footnotes",
+    "href": "chapter1.html#footnotes",
+    "title": "1  Healthcare Data",
+    "section": "",
+    "text": "Massachusetts got there first, requiring residents to carry coverage in 2006 — a few years ahead of the federal version. So if you’re reading from my home state, you’ve been mandated longer than most.↩︎",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Healthcare Data</span>"
+    ]
+  }
+]
