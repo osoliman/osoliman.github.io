@@ -203,6 +203,10 @@
 
   <div class="notice" id="next-month-notice"></div>
 
+  <div class="notice">
+    <strong>Clocks fall back Saturday night, Nov 1</strong> (Daylight Saving Time ends). Starting Sunday, Nov 1, Fajr iqama will be <strong>5:30 AM</strong>. Isha timing for November will be posted separately.
+  </div>
+
   <div class="rules">
     <h3>How times are set</h3>
     <p style="margin-bottom:6px;">Our goal is a schedule that is predictable, consistent, and faithful to the athan.</p>
@@ -236,7 +240,7 @@
 
   <footer>
     <div>May Allah keep our community united upon goodness.</div>
-    <div class="updated">Last updated: August 27, 2026</div>
+    <div class="updated">Last updated: September 25, 2026</div>
   </footer>
 
 </div>
@@ -273,6 +277,17 @@
         { from: "2026-09-18", to: "2026-09-24", fajr: "5:30 AM", isha: "8:15 PM" },
         { from: "2026-09-25", to: "2026-09-30", fajr: "5:45 AM", isha: "8:00 PM" }
       ]
+    },
+    {
+      name: "October 2026",
+      firstDay: "2026-10-01", lastDay: "2026-10-31",
+      rows: [
+        { from: "2026-10-01", to: "2026-10-01", fajr: "5:45 AM", isha: "8:00 PM" },
+        { from: "2026-10-02", to: "2026-10-08", fajr: "6:00 AM", isha: "8:00 PM" },
+        { from: "2026-10-09", to: "2026-10-15", fajr: "6:00 AM", isha: "7:45 PM" },
+        { from: "2026-10-16", to: "2026-10-22", fajr: "6:00 AM", isha: "7:30 PM" },
+        { from: "2026-10-23", to: "2026-10-31", fajr: "6:05 AM", isha: "7:30 PM" }
+      ]
     }
   ];
 
@@ -283,7 +298,9 @@
     { from: "2026-08-14", time: "5:00", ampm: "AM" },
     { from: "2026-08-28", time: "5:15", ampm: "AM" },
     { from: "2026-09-11", time: "5:30", ampm: "AM" },
-    { from: "2026-09-25", time: "5:45", ampm: "AM" }
+    { from: "2026-09-25", time: "5:45", ampm: "AM" },
+    { from: "2026-10-02", time: "6:00", ampm: "AM" },
+    { from: "2026-10-23", time: "6:05", ampm: "AM" }
   ];
   var ISHA_BLOCKS = [
     { from: "2026-07-18", time: "10:00", ampm: "PM" },
@@ -294,7 +311,9 @@
     { from: "2026-09-04", time: "8:45", ampm: "PM" },
     { from: "2026-09-11", time: "8:30", ampm: "PM" },
     { from: "2026-09-18", time: "8:15", ampm: "PM" },
-    { from: "2026-09-25", time: "8:00", ampm: "PM" }
+    { from: "2026-09-25", time: "8:00", ampm: "PM" },
+    { from: "2026-10-09", time: "7:45", ampm: "PM" },
+    { from: "2026-10-16", time: "7:30", ampm: "PM" }
   ];
 
   /* ================= no edits needed below this line ================= */
@@ -349,13 +368,16 @@
     // compute rowspans for merged identical consecutive values
     var span = { fajr: [], isha: [] };
     ["fajr", "isha"].forEach(function (k) {
-      for (var i = 0; i < rows.length; i++) {
-        if (i > 0 && rows[i][k] === rows[i - 1][k] && span[k][i - 1] !== 0) {
-          // find the row that started this run
-          var j = i - 1;
-          while (span[k][j] === 0) j--;
-          span[k][j]++; span[k][i] = 0;
-        } else span[k][i] = 1;
+      var runStart = 0;
+      span[k][0] = 1;
+      for (var i = 1; i < rows.length; i++) {
+        if (rows[i][k] === rows[i - 1][k]) {
+          span[k][runStart]++;
+          span[k][i] = 0;
+        } else {
+          runStart = i;
+          span[k][i] = 1;
+        }
       }
     });
     var html = '<div class="section-label"><h2>' + month.name + '</h2></div>' +
@@ -400,7 +422,7 @@
     document.getElementById("next-month-notice").innerHTML =
       "The <strong>" + fullNext + " schedule</strong> will be posted here in the last week of " +
       ["January","February","March","April","May","June","July","August","September","October","November","December"][last.getMonth()] +
-      ", insha&rsquo;Allah. The current September times continue through <strong>Thursday, Oct 8</strong>.";
+      ", insha&rsquo;Allah.";
   }
 
   /* ---- Feedback form (AJAX) ---- */
