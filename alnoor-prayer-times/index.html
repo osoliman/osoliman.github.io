@@ -203,8 +203,8 @@
 
   <div class="notice" id="next-month-notice"></div>
 
-  <div class="notice">
-    <strong>Clocks fall back Saturday night, Nov 1</strong> (Daylight Saving Time ends). Starting Sunday, Nov 1, Fajr iqama will be <strong>5:30 AM</strong>. Isha timing for November will be posted separately.
+  <div class="notice" id="dst-notice">
+    <strong>Clocks fall back Saturday night</strong> (Daylight Saving Time ends). Starting Sunday, Nov 1, Fajr iqama will be <strong>5:30 AM</strong> and Isha iqama will be <strong>7:00 PM</strong>.
   </div>
 
   <div class="rules">
@@ -240,7 +240,7 @@
 
   <footer>
     <div>May Allah keep our community united upon goodness.</div>
-    <div class="updated">Last updated: September 25, 2026</div>
+    <div class="updated">Last updated: October 29, 2026</div>
   </footer>
 
 </div>
@@ -288,6 +288,15 @@
         { from: "2026-10-16", to: "2026-10-22", fajr: "6:00 AM", isha: "7:30 PM" },
         { from: "2026-10-23", to: "2026-10-31", fajr: "6:05 AM", isha: "7:30 PM" }
       ]
+    },
+    {
+      name: "November 2026",
+      firstDay: "2026-11-01", lastDay: "2026-11-30",
+      rows: [
+        { from: "2026-11-01", to: "2026-11-12", fajr: "5:30 AM", isha: "7:00 PM" },
+        { from: "2026-11-13", to: "2026-11-26", fajr: "5:45 AM", isha: "7:00 PM" },
+        { from: "2026-11-27", to: "2026-11-30", fajr: "6:00 AM", isha: "7:00 PM" }
+      ]
     }
   ];
 
@@ -300,7 +309,10 @@
     { from: "2026-09-11", time: "5:30", ampm: "AM" },
     { from: "2026-09-25", time: "5:45", ampm: "AM" },
     { from: "2026-10-02", time: "6:00", ampm: "AM" },
-    { from: "2026-10-23", time: "6:05", ampm: "AM" }
+    { from: "2026-10-23", time: "6:05", ampm: "AM" },
+    { from: "2026-11-01", time: "5:30", ampm: "AM" },
+    { from: "2026-11-13", time: "5:45", ampm: "AM" },
+    { from: "2026-11-27", time: "6:00", ampm: "AM" }
   ];
   var ISHA_BLOCKS = [
     { from: "2026-07-18", time: "10:00", ampm: "PM" },
@@ -313,7 +325,8 @@
     { from: "2026-09-18", time: "8:15", ampm: "PM" },
     { from: "2026-09-25", time: "8:00", ampm: "PM" },
     { from: "2026-10-09", time: "7:45", ampm: "PM" },
-    { from: "2026-10-16", time: "7:30", ampm: "PM" }
+    { from: "2026-10-16", time: "7:30", ampm: "PM" },
+    { from: "2026-11-01", time: "7:00", ampm: "PM" }
   ];
 
   /* ================= no edits needed below this line ================= */
@@ -424,6 +437,10 @@
       ["January","February","March","April","May","June","July","August","September","October","November","December"][last.getMonth()] +
       ", insha&rsquo;Allah.";
   }
+
+  /* ---- DST heads-up note hides itself after Nov 2, 2026 ---- */
+  var dstNote = document.getElementById("dst-notice");
+  if (dstNote && today >= localDate("2026-11-02")) dstNote.style.display = "none";
 
   /* ---- Feedback form (AJAX) ---- */
   var form = document.getElementById("feedback-form");
